@@ -9,6 +9,8 @@ import './Main.css';
 
 function App() {
 
+  const [devs, setDevs] = useState([]);
+
   const [github_username, setGithubUsername] = useState('');
   const [techs, setTechs] = useState('');
 
@@ -32,6 +34,17 @@ function App() {
     )
   }, []);
 
+  useEffect(() => {
+    async function loadDevs() {
+      const response = await api.get('/devs');
+
+      setDevs(response.data);
+    }
+    
+    loadDevs();
+
+  }, []);
+
   
 
   async function handleAddDev(e) {
@@ -46,6 +59,8 @@ function App() {
 
     setGithubUsername('');
     setTechs('');
+
+    setDevs([...devs, response.data]);
 
     console.log(response.data);
   }
@@ -107,59 +122,22 @@ function App() {
 
       <main>
         <ul>
-          <li className="dev-item">
-            <header>
-              <img src="https://avatars1.githubusercontent.com/u/6723882?s=460&v=4" alt="Moisés Abraão" />
-              <div className="user-infor">
-                <strong>Moisés Abraão</strong>
-                <span>React, React Native, Node</span>
-              </div>
-            </header>
-            <p>Apenas um pipolho das Gírias</p>
-            <a href="https://github.com/MoisesAbraao">Acessar Perfil no Github</a>
-
-          </li>
-
-          <li className="dev-item">
-            <header>
-              <img src="https://avatars1.githubusercontent.com/u/6723882?s=460&v=4" alt="Moisés Abraão" />
-              <div className="user-infor">
-                <strong>Moisés Abraão</strong>
-                <span>React, React Native, Node</span>
-              </div>
-            </header>
-            <p>Apenas um pipolho das Gírias</p>
-            <a href="https://github.com/MoisesAbraao">Acessar Perfil no Github</a>
-
-          </li>
-
-          <li className="dev-item">
-            <header>
-              <img src="https://avatars1.githubusercontent.com/u/6723882?s=460&v=4" alt="Moisés Abraão" />
-              <div className="user-infor">
-                <strong>Moisés Abraão</strong>
-                <span>React, React Native, Node</span>
-              </div>
-            </header>
-            <p>Apenas um pipolho das Gírias</p>
-            <a href="https://github.com/MoisesAbraao">Acessar Perfil no Github</a>
-
-          </li>
-
-          <li className="dev-item">
-            <header>
-              <img src="https://avatars1.githubusercontent.com/u/6723882?s=460&v=4" alt="Moisés Abraão" />
-              <div className="user-infor">
-                <strong>Moisés Abraão</strong>
-                <span>React, React Native, Node</span>
-              </div>
-            </header>
-            <p>Apenas um pipolho das Gírias</p>
-            <a href="https://github.com/MoisesAbraao">Acessar Perfil no Github</a>
-
-          </li>
+          {devs.map(dev => (
+            // <DevItem key={dev.id} dev={dev}/>
+                <li key={dev.id} className="dev-item">
+                <header>
+                  <img src={dev.avatar_url} alt={dev.name} />
+                  <div className="user-infor">
+                    <strong>{ dev.name }</strong>
+                    <span>{dev.techs}</span>
+                  </div>
+                </header>
+                <p>{dev.bio}</p>
+                <a href={`https://github.com/${dev.github_username}`}>Acessar Perfil no Github</a>
+              </li>
+            )
+          )}
         </ul>
-
       </main>
     </div>
   );
